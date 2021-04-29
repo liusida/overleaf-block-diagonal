@@ -1,0 +1,6 @@
+The block diagonal form is very useful.
+There are many methods in the field of Matrix reordering that can do this even when there is no exact solution.
+However, those methods introduce misleading artifacts to the results.
+Here, we propose a straightforward but novel loss function that measure the \emph{Weighted Distance to the Diagonal Line} ($L^{WDDL}$) that promotes the block diagonal form.
+If we apply a simple hill climbing optimization on $-L^{WDDL}$, we can obtain an approximate block diagonal form.
+We visually compare the difference in the resulting matrices between our method and existing methods.
