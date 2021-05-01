@@ -1,0 +1,63 @@
+In order to reveal the structure of the network $G$, we need to reorder the matrix.
+There are many ways to arrange a symmetric matrix, \cite{behrisch_matrix_2016} provides a good review of all those methods.
+
+We want to reorder the matrix into an proximate block diagonal form, so that papers produced by the same group will be arranged close to each other.
+We achieve this by minimizing the minimum linear arrangement (MinLA) cost function:
+
+\begin{equation}
+    LA(G, \pi) = \sum_{ij \in E} |\pi(i) - \pi(j)|
+\end{equation}
+
+where $\pi$ is a one-to-one function $V \rightarrow \{1,2,\cdots,|V|\}$ representing the permutation of the nodes in 1D, a.k.a the arrangement of the matrix.
+This MinLA was introduced in 1973, and well studied.
+\cite{petit_experiments_2004} has thoroughly introduced lower bound methods and heristic methods, including the hill climbing method.
+
+Basic hill climbing algorithm can be described in Algo. \ref{algo:hillclimbing}. 
+
+\begin{algorithm}
+    \caption{Hill Climbing}\label{algo:hillclimbing}
+    \begin{algorithmic}[1]
+        \State \textbf{while} not Terminated:
+        \State \hskip2em $i,j \leftarrow \textbf{random}()$
+        \State \hskip2em \textbf{if} \textbf{swapCanReduceLA}(i,j): \Comment{This can be done in $O(|V|)$.}
+        \State \hskip4em \textbf{swap}(i,j)
+    \end{algorithmic}
+\end{algorithm}
+
+To make the optimization process faster, we propose a GPU augmented hill climbing method, described in Algo. \ref{algo:gpu_hill_climbing}.
+
+\begin{algorithm}
+    \caption{GPU augmented Hill Climbing}\label{algo:gpu_hill_climbing}
+    \begin{algorithmic}[1]
+        \State \textbf{while} not Terminated:
+        \State \hskip2em $\textmd{goodSwaps} \leftarrow \textbf{detectGoodSwaps}()$ \Comment{With GPU, we detect 16,384 possible swaps in one step.}
+        \State \hskip2em $\textbf{applySwap}(\textmd{goodSwaps})$ \Comment{Some of the swaps conflict with each other,}
+        \State \Comment{we randomly pick one valid swap in them.}
+    \end{algorithmic}
+\end{algorithm}
+
+Fig. \ref{fig:gpu_hill_climbing} shows the optimization curve of Algo. \ref{algo:gpu_hill_climbing}.
+
+\begin{figure}
+    \centering
+    \fbox{\rule[-.5cm]{4cm}{4cm} \rule[-.5cm]{4cm}{0cm}}
+    \caption{Optimization curve of Algo. \ref{algo:gpu_hill_climbing}.}
+    \label{fig:gpu_hill_climbing}
+\end{figure}
+
+GPU augmented hill climbing method is fast enough to get reasonable good results in less than one minute.
+One of the results can be visualized in Fig. \ref{fig:optimization_results}.
+
+\begin{figure}
+    \centering
+    \fbox{\rule[-.5cm]{4cm}{4cm} \rule[-.5cm]{4cm}{0cm}}
+    \caption{One of the optimization results of Algo. \ref{algo:gpu_hill_climbing}.}
+    \label{fig:optimization_results}
+\end{figure}
+
+However, it still slightly suffers from local optima.
+In order to get more optimal results, one can not rely on running the algorithm for longer.
+
+Luckily, the \emph{applySwap} (Algo. \ref{algo:gpu_hill_climbing}, line 3) function can have different choices with one batch of good swaps.
+This provides us the possibility of employing the Evolutionary Algorithms.
+This can be done in the future.

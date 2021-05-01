@@ -1,0 +1,31 @@
+The problem:
+
+I am trying to find the field and terminology.
+It is related to Matrix Reordering Methods. \cite{behrisch_matrix_2016}
+
+This problem is equivalent to the \emph{minimum linear arrangement problem} (MinLA). \cite{goos_multi-scale_2002}
+MinLA is introduced back in 1973 as the \emph{optimal linear ordering problem}. \cite{adolphson_optimal_1973}
+
+It is a special case of \emph{quadratic assignment problem}, where every node is in a line and have equal unit distance to it's neighbors.
+
+It is NP-complete. \cite{garey_simplified_1976}
+
+\cite{goos_multi-scale_2002} provide a exact algorithm that can serve as the ground truth, which is better than naive enumerate $O(n!)$.
+
+\cite{andrade_minimum_2017} provide an exact linear programming method, which can solve toy problems with only 10 nodes.
+
+\cite{pantrigo_scatter_2012} uses evolutionary approach to solve a unweighted version of this problem. they call it the cutwidth minimization problem.
+
+\cite{petit_experiments_2004} has thoroughly introduced lower bound methods and heristic methods, including the hill climbing method. which is good.
+however, after that paper, evolutionary algorithms have been developed.
+we re-engineer the hill climbing a bit, to make it faster.
+we also try other methods like parallel hill climbing, to show it is possible to apply full flame evolutionary algorithm.
+
+
+Preprocessing:
+
+We can first detect the largest connected component, because if the graph is not connected, the sub-graphs can be solved independently.
+
+Future direction:
+
+push 1D (2D matrix reordering) to 2D (4D tensor reordering), maybe we can get a 2D visualization!

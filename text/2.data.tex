@@ -1,0 +1,63 @@
+\subsection{Retrival}
+
+arXiv is the largest hub for scientific papers.
+It also supports the Open Archives Initiative (OAI), 
+so a large volume of metadata can be downloaded through the OAI interface.
+\footnote{More about arXiv OAI: https://arxiv.org/help/oa}
+
+In April 2021, we download the metadata of 227,842 papers.
+Our main interest field is Deep Learning.
+Due to the computational resource constraints, we only processed two arXiv subcategories: cs.LG (Machine Learning) and cs.AI (Artificial Intelligence).
+There are 93,911 papers in these two subcategories.
+
+We continue to filter the papers by the citation numbers.
+The citation number of a paper is an important indicator.
+However, arXiv metadata does not include any information about citations,
+and the accurate citation numbers are hard to obtain, 
+so we get the citation numbers from two third-party websites.
+
+The first data source is the Semantic Scholar (S2).
+S2 provides additional metadata including the citation numbers of scientific papers.
+\footnote{More about Semantic Scholar API: https://api.semanticscholar.org/}
+We use the S2 citation numbers to filter out highly citated papers.
+We keep 4,422 papers with S2 citation number large than or equal 100 as the highly cited papers.
+
+The second data source is the Google Scholar.
+Google Scholar also provides citation numbers on its website.
+However, it does not support API retrival due to unspecified reason.
+Getting citation number from the Goolge Scholar can only be done semi-automatically.
+
+Two data sources both have its strength and shortage.
+So we ensemble two parts together by taking the mean of the two.
+Fig. \ref{fig:distribution} shows the distribution of the highly cited papers.
+\footnote{Raw data of those 4422 papers can be downloaded at: http://}
+
+\begin{figure}
+    \centering
+    \fbox{\rule[-.5cm]{4cm}{4cm} \rule[-.5cm]{4cm}{0cm}}
+    \caption{Sample figure caption.}
+    \label{fig:distribution}
+\end{figure}
+
+\subsection{Relationship Between Papers}
+
+Now we have 4,422 highly cited papers.
+We define a undirected weighted network $G(V,E)$, with its nodes $V$ to be the set of those papers, and its edges $E$ to be the set of the relationships between papers.
+
+Our objective is to reveal the structure of the research community.
+Based on this objective, we define the weights $w_{i,j}$ of the edge between papers based on its authors.
+We divide the authors of a paper into two classes: $A$ the first author and the last author, $B$ other authors which is neither the first nor the last author.
+\footnote{We manually correct several mistakes in metadata before dividing them into two classes.}
+Class $A$ always at least contains one author, and class $B$ could be empty if there is no other authors.
+We give a weight of 10 if class $A$ of two papers overlap.
+Otherwise, we give a weight of 5 if class $A$ of one paper overlaps with $B$ of another paper.
+Otherwise, we give a weight of 3 if class $B$ of two papers overlap.
+
+Fig. \ref{fig:matrix_random_arrangement} shows the adjacent matrix of the constructed network $G$ with a random arrangement.
+
+\begin{figure}
+    \centering
+    \fbox{\rule[-.5cm]{4cm}{4cm} \rule[-.5cm]{4cm}{0cm}}
+    \caption{Sample figure caption.}
+    \label{fig:matrix_random_arrangement}
+\end{figure}

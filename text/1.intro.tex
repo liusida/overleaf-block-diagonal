@@ -1,0 +1,19 @@
+
+Deep Learning as a field is exploding.
+The number of papers is growing rapidly.
+
+Luckily, arXiv acts as a central hub for important papers and opens to everyone.
+This provides a chance for us to analyze those papers procedually.
+
+We harvest the meta data from arXiv service.
+And obtain the citation numbers from Semantic Scholar and Google Scholar.
+We will see, although the total number of papers is big, the number of highly cited papers is relatively small.
+
+We compare the authorships of the highly cited papers pairwisely to obtain a pairwise relationship matrix.
+We reorder the relationship matrix by minimize the minimum linear arrangement (MinLA) cost function, so that the nodes that have relationship are arranged closer.
+The optimization is done through a GPU augmented parallel hill climbing algorithm.
+We observe that clusters are formed, indicating the structure of the research community.
+
+Finally, we visualize the results as a sorted list of papers, with a corresponding image to indicate the community structure.
+We will highlight several famous clusters.
+
