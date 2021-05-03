@@ -3,7 +3,7 @@
 arXiv is the largest hub for scientific papers.
 It also supports the Open Archives Initiative (OAI), 
 so a large volume of metadata can be downloaded through the OAI interface.
-\footnote{More about arXiv OAI: https://arxiv.org/help/oa}
+\footnote{More about arXiv OAI: \url{https://arxiv.org/help/oa}}
 
 In April 2021, we download the metadata of 227,842 papers.
 Our main interest field is Deep Learning.
@@ -18,7 +18,7 @@ so we get the citation numbers from two third-party websites.
 
 The first data source is the Semantic Scholar (S2).
 S2 provides additional metadata including the citation numbers of scientific papers.
-\footnote{More about Semantic Scholar API: https://api.semanticscholar.org/}
+\footnote{More about Semantic Scholar API: \url{https://api.semanticscholar.org/}}
 We use the S2 citation numbers to filter out highly citated papers.
 We keep 4,422 papers with S2 citation number large than or equal 100 as the highly cited papers.
 
@@ -30,12 +30,19 @@ Getting citation number from the Goolge Scholar can only be done semi-automatica
 Two data sources both have its strength and shortage.
 So we ensemble two parts together by taking the mean of the two.
 Fig. \ref{fig:distribution} shows the distribution of the highly cited papers.
-\footnote{Raw data of those 4422 papers can be downloaded at: http://}
+\footnote{Raw data of those 4,422 papers can be downloaded at: \url{http://star-lab.ai/arxiv/arxiv_4422.tar.gz}}
 
 \begin{figure}
     \centering
-    \fbox{\rule[-.5cm]{4cm}{4cm} \rule[-.5cm]{4cm}{0cm}}
-    \caption{Sample figure caption.}
+    \includegraphics[width=\textwidth]{images/citation_number_distribution.pdf}
+    \caption{Citation number distribution for highly cited 4,422 arXiv cs.LG and cs.AI papers. 
+    The blue dots is the Semantic Scholar citation numbers ($S2$), 
+    and the orange dots are the Google Scholar citation numbers ($GS$). 
+    For most of the papers, $GS$ are higher than $S2$.
+    $S2$ are bounded by $10^4$, which might due to their system limitation.
+    But $GS$ misses some papers which $S2$ consider them as highly cited.
+    The green line is the mean of $S2$ and $GS$.
+    }
     \label{fig:distribution}
 \end{figure}
 
@@ -46,18 +53,25 @@ We define a undirected weighted network $G(V,E)$, with its nodes $V$ to be the s
 
 Our objective is to reveal the structure of the research community.
 Based on this objective, we define the weights $w_{i,j}$ of the edge between papers based on its authors.
-We divide the authors of a paper into two classes: $A$ the first author and the last author, $B$ other authors which is neither the first nor the last author.
-\footnote{We manually correct several mistakes in metadata before dividing them into two classes.}
-Class $A$ always at least contains one author, and class $B$ could be empty if there is no other authors.
-We give a weight of 10 if class $A$ of two papers overlap.
-Otherwise, we give a weight of 5 if class $A$ of one paper overlaps with $B$ of another paper.
-Otherwise, we give a weight of 3 if class $B$ of two papers overlap.
+We divide the authors of a paper into two classes: ($A$) the first author and the last author, ($B$) other authors which is neither the first nor the last author.
+
+There are multiple inconsistencies in arXiv metadata and Semantic Scholar metadata, we tried to correct some errors, but still there are remaining ones.
+In this case, we use the metadata from arXiv.
+
+Class ($A$) always at least contains one author, and class ($B$) could be empty if there is no other authors.
+We give a weight of 1.0 if class ($A$) of two papers overlap.
+Otherwise, we give a weight of 0.5 if class ($A$) of one paper overlaps with ($B$) of another paper.
+Otherwise, we give a weight of 0.3 if class ($B$) of two papers overlap.
 
 Fig. \ref{fig:matrix_random_arrangement} shows the adjacent matrix of the constructed network $G$ with a random arrangement.
 
 \begin{figure}
     \centering
-    \fbox{\rule[-.5cm]{4cm}{4cm} \rule[-.5cm]{4cm}{0cm}}
-    \caption{Sample figure caption.}
+    \includegraphics[width=\textwidth]{images/random_arrangement.png}
+    \caption{The relationship matrix in a random arrangement before matrix reordering. 
+    Dark grids mean they have values, which represent the author relationships between two papers.
+    The diagonal line is defined to be 1.0.
+    However, a 4422x4422 matrix with a random arrangement is almost meaningless to a human observer (do you see a blank square?).
+    }
     \label{fig:matrix_random_arrangement}
 \end{figure}

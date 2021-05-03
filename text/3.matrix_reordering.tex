@@ -1,16 +1,29 @@
 In order to reveal the structure of the network $G$, we need to reorder the matrix.
 There are many ways to arrange a symmetric matrix, \cite{behrisch_matrix_2016} provides a good review of all those methods.
+One should notice that many methods will introduce so called the \emph{Off-diagonal Block Pattern} even when there is no such pattern in the data.
+This is an artifact of the algorithms.
 
 We want to reorder the matrix into an proximate block diagonal form, so that papers produced by the same group will be arranged close to each other.
-We achieve this by minimizing the minimum linear arrangement (MinLA) cost function:
+We achieve this by minimizing the weighted minimum linear arrangement (MinLA) cost function:
 
 \begin{equation}
-    LA(G, \pi) = \sum_{ij \in E} |\pi(i) - \pi(j)|
+    LA(G, \pi) = \sum_{ij \in E} A_{i,j} \cdot |\pi(i) - \pi(j)|
 \end{equation}
 
 where $\pi$ is a one-to-one function $V \rightarrow \{1,2,\cdots,|V|\}$ representing the permutation of the nodes in 1D, a.k.a the arrangement of the matrix.
+
+In this paper, we use a normalized version of MinLA:
+\begin{equation}
+    LA(G, \pi) = \sum_{ij \in E} A_{i,j} \cdot \frac{|\pi(i) - \pi(j)|}{|V|^2}
+\end{equation}
+
+where $|V|$ is the number of nodes.
+
 This MinLA was introduced in 1973, and well studied.
-\cite{petit_experiments_2004} has thoroughly introduced lower bound methods and heristic methods, including the hill climbing method.
+It is a NP-complete problem.
+One should not expect to solve large scale NP-complete using exact methods, 
+e.g. \cite{andrade_minimum_2017} only works with less than 20 nodes.
+Petit \cite{petit_experiments_2004} has thoroughly introduced some heristic methods, including the hill climbing method.
 
 Basic hill climbing algorithm can be described in Algo. \ref{algo:hillclimbing}. 
 
@@ -30,9 +43,12 @@ To make the optimization process faster, we propose a GPU augmented hill climbin
     \caption{GPU augmented Hill Climbing}\label{algo:gpu_hill_climbing}
     \begin{algorithmic}[1]
         \State \textbf{while} not Terminated:
-        \State \hskip2em $\textmd{goodSwaps} \leftarrow \textbf{detectGoodSwaps}()$ \Comment{With GPU, we detect 16,384 possible swaps in one step.}
-        \State \hskip2em $\textbf{applySwap}(\textmd{goodSwaps})$ \Comment{Some of the swaps conflict with each other,}
-        \State \Comment{we randomly pick one valid swap in them.}
+        \State \hskip2em Detect pairs which if swapped will reduce the LA cost \Comment{With 32,768 threads on GPU}
+        \State \hskip2em Sort pairs by the gains (the amount that can be reduced)
+        \State \hskip2em Remove conflicted pairs with less gains
+        \State \hskip2em Swap all pairs remained
+        \State \hskip2em If number of the found pairs is small:
+        \State \hskip4em Double the number of parallel threads for detection until limit hit
     \end{algorithmic}
 \end{algorithm}
 
@@ -40,8 +56,8 @@ Fig. \ref{fig:gpu_hill_climbing} shows the optimization curve of Algo. \ref{algo
 
 \begin{figure}
     \centering
-    \fbox{\rule[-.5cm]{4cm}{4cm} \rule[-.5cm]{4cm}{0cm}}
-    \caption{Optimization curve of Algo. \ref{algo:gpu_hill_climbing}.}
+    \includegraphics[width=0.8\textwidth]{images/optimization_curve.png}
+    \caption{Optimization curve of Algo. \ref{algo:gpu_hill_climbing}. Averaged over 100 independent runs.}
     \label{fig:gpu_hill_climbing}
 \end{figure}
 
@@ -50,14 +66,17 @@ One of the results can be visualized in Fig. \ref{fig:optimization_results}.
 
 \begin{figure}
     \centering
-    \fbox{\rule[-.5cm]{4cm}{4cm} \rule[-.5cm]{4cm}{0cm}}
-    \caption{One of the optimization results of Algo. \ref{algo:gpu_hill_climbing}.}
+    \includegraphics[width=\textwidth]{images/optimized_arrangement.png}
+    \caption{The most optimal solution of Algo. \ref{algo:gpu_hill_climbing} in 100 runs.
+    Comparing to the random arrangement in Fig. \ref{fig:matrix_random_arrangement}, 
+    now we can easily observe the structure of the research community.
+    }
     \label{fig:optimization_results}
 \end{figure}
 
 However, it still slightly suffers from local optima.
 In order to get more optimal results, one can not rely on running the algorithm for longer.
 
-Luckily, the \emph{applySwap} (Algo. \ref{algo:gpu_hill_climbing}, line 3) function can have different choices with one batch of good swaps.
-This provides us the possibility of employing the Evolutionary Algorithms.
-This can be done in the future.
+Our best results are achieved by searching with 100 independent runs with random initialization.
+However, we observe that the initial states matter more than trying different choices during optimization.
+Thus, an evolutionary approach \cite{eppley2001} searching for better initial states might be better than our random initialization.
