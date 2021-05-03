@@ -1,17 +1,18 @@
 \subsection{Retrival}
 
-arXiv is the largest hub for scientific papers.
+arXiv is the largest hub for open access scientific papers.
 It also supports the Open Archives Initiative (OAI), 
-so a large volume of metadata can be downloaded through the OAI interface.
+so a large volume of metadata can be easily downloaded through the OAI interface.
 \footnote{More about arXiv OAI: \url{https://arxiv.org/help/oa}}
 
-In April 2021, we download the metadata of 227,842 papers.
+In April 2021, we downloaded the metadata of 227,842 papers.
+The analysis of this paper is based on these metadata.
 Our main interest field is Deep Learning.
 Due to the computational resource constraints, we only processed two arXiv subcategories: cs.LG (Machine Learning) and cs.AI (Artificial Intelligence).
 There are 93,911 papers in these two subcategories.
 
 We continue to filter the papers by the citation numbers.
-The citation number of a paper is an important indicator.
+The citation number of a paper is a commonly-used indicator.
 However, arXiv metadata does not include any information about citations,
 and the accurate citation numbers are hard to obtain, 
 so we get the citation numbers from two third-party websites.
@@ -27,10 +28,11 @@ Google Scholar also provides citation numbers on its website.
 However, it does not support API retrival due to unspecified reason.
 Getting citation number from the Goolge Scholar can only be done semi-automatically.
 
-Two data sources both have its strength and shortage.
-So we ensemble two parts together by taking the mean of the two.
+Two data sources both have its strength and limitation,
+so we ensemble two parts together by taking the mean of the two.
 Fig. \ref{fig:distribution} shows the distribution of the highly cited papers.
 \footnote{Raw data of those 4,422 papers can be downloaded at: \url{http://star-lab.ai/arxiv/arxiv_4422.tar.gz}}
+We observe from the figure that the citation numbers approximately follow a power law distribution.
 
 \begin{figure}
     \centering
@@ -49,7 +51,7 @@ Fig. \ref{fig:distribution} shows the distribution of the highly cited papers.
 \subsection{Relationship Between Papers}
 
 Now we have 4,422 highly cited papers.
-We define a undirected weighted network $G(V,E)$, with its nodes $V$ to be the set of those papers, and its edges $E$ to be the set of the relationships between papers.
+We define a undirected weighted network $G(V,E)$, with its nodes set $V$ to be the set of those papers, and its edges set $E$ to be the set of the relationships between papers.
 
 Our objective is to reveal the structure of the research community.
 Based on this objective, we define the weights $w_{i,j}$ of the edge between papers based on its authors.
@@ -63,6 +65,9 @@ We give a weight of 1.0 if class ($A$) of two papers overlap.
 Otherwise, we give a weight of 0.5 if class ($A$) of one paper overlaps with ($B$) of another paper.
 Otherwise, we give a weight of 0.3 if class ($B$) of two papers overlap.
 
+This is an ad hoc method to define the relationships.
+One can come up with other definitions and the pipeline will still work.
+
 Fig. \ref{fig:matrix_random_arrangement} shows the adjacent matrix of the constructed network $G$ with a random arrangement.
 
 \begin{figure}
@@ -71,7 +76,8 @@ Fig. \ref{fig:matrix_random_arrangement} shows the adjacent matrix of the constr
     \caption{The relationship matrix in a random arrangement before matrix reordering. 
     Dark grids mean they have values, which represent the author relationships between two papers.
     The diagonal line is defined to be 1.0.
-    However, a 4422x4422 matrix with a random arrangement is almost meaningless to a human observer (do you see a blank square?).
+    However, a 4422x4422 matrix with a random arrangement is almost meaningless to a human observer.
+    (The image looks almost blank due to the sparsity of the matrix.)
     }
     \label{fig:matrix_random_arrangement}
 \end{figure}
