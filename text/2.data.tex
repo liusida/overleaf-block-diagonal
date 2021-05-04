@@ -1,7 +1,7 @@
 \subsection{Retrival}
 
 arXiv is the largest hub for open access scientific papers.
-It also supports the Open Archives Initiative (OAI), 
+It also supports the Open Archives Initiative (OAI),
 so a large volume of metadata can be easily downloaded through the OAI interface.
 \footnote{More about arXiv OAI: \url{https://arxiv.org/help/oa}}
 
@@ -14,12 +14,29 @@ There are 93,911 papers in these two subcategories.
 We continue to filter the papers by the citation numbers.
 The citation number of a paper is a commonly-used indicator.
 However, arXiv metadata does not include any information about citations,
-and the accurate citation numbers are hard to obtain, 
+and the accurate citation numbers are hard to obtain,
 so we get the citation numbers from two third-party websites.
 
 The first data source is the Semantic Scholar (S2).
 S2 provides additional metadata including the citation numbers of scientific papers.
 \footnote{More about Semantic Scholar API: \url{https://api.semanticscholar.org/}}
+We can see from Fig. \ref{fig:s2_dist}, the citation number follows a power-law distribution, which means there are a few highly cited papers and many papers with much less citations.
+Among them, 27,317 papers in 93,911 (roughly 29\%) have a citation number of zero.
+Also we can notice from the figure that there is a hard cut-off at $10^4$, which might due to their system limitation.
+
+\begin{figure}
+    \centering
+    \begin{minipage}{0.48\textwidth}
+        \includegraphics[width=\textwidth]{images/s2_dist.pdf}
+    \end{minipage}%
+    \begin{minipage}{0.48\textwidth}
+        \includegraphics[width=\textwidth]{images/s2_dist_log.pdf}
+    \end{minipage}
+    \caption{Citation number follows a power-law distribution according to S2.
+    (Left): Normal scale. (Right): Log-log scale excluding the zero-cited papers.}
+    \label{fig:s2_dist}
+\end{figure}
+
 We use the S2 citation numbers to filter out highly citated papers.
 We keep 4,422 papers with S2 citation number large than or equal 100 as the highly cited papers.
 
@@ -37,13 +54,13 @@ We observe from the figure that the citation numbers approximately follow a powe
 \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{images/citation_number_distribution.pdf}
-    \caption{Citation number distribution for highly cited 4,422 arXiv cs.LG and cs.AI papers. 
-    The blue dots is the Semantic Scholar citation numbers ($S2$), 
-    and the orange dots are the Google Scholar citation numbers ($GS$). 
-    For most of the papers, $GS$ are higher than $S2$.
-    $S2$ are bounded by $10^4$, which might due to their system limitation.
-    But $GS$ misses some papers which $S2$ consider them as highly cited.
-    The green line is the mean of $S2$ and $GS$.
+    \caption{Citation number distribution for highly cited 4,422 arXiv cs.LG and cs.AI papers.
+        The blue dots is the Semantic Scholar citation numbers ($S2$),
+        and the orange dots are the Google Scholar citation numbers ($GS$).
+        For most of the papers, $GS$ are higher than $S2$.
+        $S2$ are bounded by $10^4$, which might due to their system limitation.
+        But $GS$ misses some papers which $S2$ consider them as highly cited.
+        The green line is the mean of $S2$ and $GS$.
     }
     \label{fig:distribution}
 \end{figure}
@@ -73,11 +90,11 @@ Fig. \ref{fig:matrix_random_arrangement} shows the adjacent matrix of the constr
 \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{images/random_arrangement.png}
-    \caption{The relationship matrix in a random arrangement before matrix reordering. 
-    Dark grids mean they have values, which represent the author relationships between two papers.
-    The diagonal line is defined to be 1.0.
-    However, a 4422x4422 matrix with a random arrangement is almost meaningless to a human observer.
-    (The image looks almost blank due to the sparsity of the matrix.)
+    \caption{The relationship matrix in a random arrangement before matrix reordering.
+        Dark grids mean they have values, which represent the author relationships between two papers.
+        The diagonal line is defined to be 1.0.
+        However, a 4422x4422 matrix with a random arrangement is almost meaningless to a human observer.
+        (The image looks almost blank due to the sparsity of the matrix.)
     }
     \label{fig:matrix_random_arrangement}
 \end{figure}
