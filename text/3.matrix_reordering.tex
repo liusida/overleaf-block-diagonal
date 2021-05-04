@@ -4,7 +4,7 @@ In practice, we notice that many methods will introduce so called the \emph{Off-
 We consider this as an artifact of the algorithms.
 
 We want to reorder the matrix into an proximate block diagonal form, so that all the papers produced by the same group will be arranged close to each other.
-We achieve this by minimizing the weighted linear arrangement (LA) cost function:
+We achieve this by minimizing the weighted linear arrangement (LA) loss function:
 
 \begin{equation}
     LA(G, \pi) = \sum_{ij \in E} w_{i,j} \cdot |\pi(i) - \pi(j)|
