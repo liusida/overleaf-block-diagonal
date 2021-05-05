@@ -1,23 +1,23 @@
 
-Recently, the number of papers related to Deep Learning is increasing rapidly.
-arXiv.org acts as a central hub for important Deep Learning papers and opens to everyone.
+Recently, the number of papers related to Deep Learning has been increasing rapidly.
+arXiv.org acts as a central hub for important Deep Learning papers and is open to everyone.
 Deep Learning papers are mainly distributed in two subcategories: cs.LG (Machine Learning) and cs.AI (Artificial Intelligence).
-However, the number of papers in these two subcategories have reached over 90 thousands.
+However, the number of papers in these two subcategories has reached over 90 thousand.
 It is not possible for a human researcher to read all those papers.
 Thus, a Data Science approach to analyze them is inevitable.
 
 In this paper, we introduce a pipeline that can process the metadata from three sources and reveal some patterns in the data.
 
-First, we harvest the meta data from the arXiv API service and obtain the citation numbers from Semantic Scholar and Google Scholar.
+First, we harvest the metadata from the arXiv API service and obtain the citation numbers from Semantic Scholar and Google Scholar.
 We will see, although the total number of papers is big, the number of highly cited papers is relatively small.
 
 We focused on those highly cited papers.
 We compare the authorships of those papers pairwisely to obtain a pairwise relationship matrix.
-We reorder the relationship matrix by minimize the linear arrangement (MinLA) loss function, so that the nodes that have stronger relationships are arranged closer.
+We reorder the relationship matrix by minimizing the linear arrangement (LA) loss function so that the nodes that have stronger relationships are arranged closer.
 The optimization can be done both through a basic hill climbing algorithm and a GPU augmented parallel hill climbing algorithm.
 An approximate optimal solution can be obtained in less than 2 minutes.
 
-We visualize the relationship matrix and observe that clusters are formed, indicating there are structures in the research community.
+We visualize the relationship matrix and observe that clusters are formed, indicating that there are structures in the research community.
 
 Finally, we visualize the results as a sorted list of papers, with a corresponding background image to indicate the community structure.
 

@@ -6,19 +6,19 @@ so a large volume of metadata can be easily downloaded through the OAI interface
 \footnote{More about arXiv OAI: \url{https://arxiv.org/help/oa}}
 
 In April 2021, we downloaded the metadata of 227,842 papers.
-The analysis of this paper is based on these metadata.
+The analysis we have done is based on these metadata.
 Our main interest field is Deep Learning.
 Due to the computational resource constraints, we only processed two arXiv subcategories: cs.LG (Machine Learning) and cs.AI (Artificial Intelligence).
 There are 93,911 papers in these two subcategories.
 
-We continue to filter the papers by the citation numbers.
+We filter the papers by the citation number.
 The citation number of a paper is a commonly-used indicator.
 However, arXiv metadata does not include any information about citations,
-and the accurate citation numbers are hard to obtain,
+and accurate citation numbers are hard to obtain,
 so we get the citation numbers from two third-party websites.
 
-The first data source is the Semantic Scholar (S2).
-S2 provides additional metadata including the citation numbers of scientific papers.
+The first data source is Semantic Scholar (S2).
+S2 provides additional metadata including the citation numbers of the scientific papers.
 \footnote{More about Semantic Scholar API: \url{https://api.semanticscholar.org/}}
 We can see from Fig. \ref{fig:s2_dist}, the citation number follows a power-law distribution, which means there are a few highly cited papers and many papers with much less citations.
 Among them, 27,317 papers in 93,911 (roughly 29\%) have a citation number of zero.
@@ -38,24 +38,23 @@ Also we can notice from the figure that there is a hard cut-off at $10^4$, which
 \end{figure}
 
 We use the S2 citation numbers to filter out highly citated papers.
-We keep 4,422 papers with S2 citation number large than or equal 100 as the highly cited papers.
+We keep 4,422 papers with S2 citation numbers larger than or equal to 100 as the highly cited papers.
 
-The second data source is the Google Scholar.
+The second data source is Google Scholar.
 Google Scholar also provides citation numbers on its website.
-However, it does not support API retrival due to unspecified reason.
-Getting citation number from the Goolge Scholar can only be done semi-automatically.
+However, it does not support API retrival due to unspecified reasons.
+Getting citation numbers from Google Scholar can only be done semi-automatically.
 
-Two data sources both have its strength and limitation,
+The use of two data sources has both strengths and limitations,
 so we ensemble two parts together by taking the mean of the two.
 Fig. \ref{fig:distribution} shows the distribution of the highly cited papers.
-\footnote{Raw data of those 4,422 papers can be downloaded at: \url{http://star-lab.ai/arxiv/arxiv_4422.tar.gz}}
-We observe from the figure that the citation numbers approximately follow a power law distribution.
+\footnote{Raw metadata of the 4,422 papers can be downloaded at: \url{http://star-lab.ai/arxiv/arxiv_4422.tar.gz}}
 
 \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{images/citation_number_distribution.pdf}
     \caption{Citation number distribution for highly cited 4,422 arXiv cs.LG and cs.AI papers.
-        The blue dots is the Semantic Scholar citation numbers ($S2$),
+        The blue dots are the Semantic Scholar citation numbers ($S2$),
         and the orange dots are the Google Scholar citation numbers ($GS$).
         For most of the papers, $GS$ are higher than $S2$.
         $S2$ are bounded by $10^4$, which might due to their system limitation.
@@ -71,13 +70,13 @@ Now we have 4,422 highly cited papers.
 We define a undirected weighted network $G(V,E)$, with its nodes set $V$ to be the set of those papers, and its edges set $E$ to be the set of the relationships between papers.
 
 Our objective is to reveal the structure of the research community.
-Based on this objective, we define the weights $w_{i,j}$ of the edge between papers based on its authors.
-We divide the authors of a paper into two classes: ($A$) the first author and the last author, ($B$) other authors which is neither the first nor the last author.
+Based on this objective, we define the weights $w_{i,j}$ of the edge between papers based on the overlaps in authorships.
+We divide the authors of a paper into two classes: ($A$) the first author and the last author, ($B$) other authors which are neither the first nor the last author.
 
 There are multiple inconsistencies in arXiv metadata and Semantic Scholar metadata, we tried to correct some errors, but still there are remaining ones.
 In this case, we use the metadata from arXiv.
 
-Class ($A$) always at least contains one author, and class ($B$) could be empty if there is no other authors.
+Class ($A$) always at least contains one author, and class ($B$) could be empty if there are no other authors.
 We give a weight of 1.0 if class ($A$) of two papers overlap.
 Otherwise, we give a weight of 0.5 if class ($A$) of one paper overlaps with ($B$) of another paper.
 Otherwise, we give a weight of 0.3 if class ($B$) of two papers overlap.
@@ -85,7 +84,7 @@ Otherwise, we give a weight of 0.3 if class ($B$) of two papers overlap.
 This is an ad hoc method to define the relationships.
 One can come up with other definitions and the pipeline will still work.
 
-Fig. \ref{fig:matrix_random_arrangement} shows the adjacent matrix of the constructed network $G$ with a random arrangement.
+Fig. \ref{fig:matrix_random_arrangement} shows the adjacent matrix of the constructed network $G$ with a random arrangement (which is almost blank).
 
 \begin{figure}
     \centering

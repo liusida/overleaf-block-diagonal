@@ -3,11 +3,11 @@ There are many ways to rearrange a symmetric matrix, Behrisch et al. \cite{behri
 In practice, we notice that many methods will introduce so called the \emph{Off-diagonal Block Pattern} even when there is no such pattern in the data.
 We consider this as an artifact of the algorithms.
 
-We want to reorder the matrix into an proximate block diagonal form, so that all the papers produced by the same group will be arranged close to each other.
+We want to reorder the matrix into an approximate block diagonal form, so that all the papers produced by the same group will be arranged close to each other.
 We achieve this by minimizing the weighted linear arrangement (LA) loss function:
 
 \begin{equation}
-    LA(G, \pi) = \sum_{ij \in E} w_{i,j} \cdot |\pi(i) - \pi(j)|
+    \textbf{LA}'(G, \pi) = \sum_{ij \in E} w_{i,j} \cdot |\pi(i) - \pi(j)|
 \end{equation}
 
 where $\pi$ is a one-to-one function $V \rightarrow \{1,2,\cdots,|V|\}$ representing the permutation of the nodes in 1D, a.k.a the arrangement of the matrix;
@@ -15,7 +15,7 @@ $w_{i,j}$ is the weights of the edge between node $i$ and $j$.
 
 In this paper, we use a normalized version of MinLA:
 \begin{equation}
-    LA(G, \pi) = \sum_{ij \in E} w_{i,j} \cdot \frac{|\pi(i) - \pi(j)|}{|V|^2}
+    \textbf{LA}(G, \pi) = \sum_{ij \in E} w_{i,j} \cdot \frac{|\pi(i) - \pi(j)|}{|V|^2}
 \end{equation}
 
 where $|V|$ is the number of nodes.
@@ -26,10 +26,10 @@ It is a special case of the \emph{quadratic assignment problem}, where every nod
 It is proved to be a NP-complete problem \cite{garey_simplified_1976},
 One should not expect to solve a large scale NP-complete using exact methods, 
 e.g. \cite{andrade_minimum_2017} only works with no more than 20 nodes.
-Petit \cite{petit_experiments_2004} has thoroughly introduced some heristic methods that can provide approximate optimal solutions to the MinLA problem, 
+Petit \cite{petit_experiments_2004} has thoroughly introduced some heuristic methods that can provide approximate optimal solutions to the MinLA problem, 
 including the hill climbing method.
 
-Basic hill climbing algorithm can be described in Algo. \ref{algo:hillclimbing}. 
+A basic hill climbing algorithm can be described in Algo. \ref{algo:hillclimbing}. 
 
 \begin{algorithm}
     \caption{Hill Climbing}\label{algo:hillclimbing}
@@ -50,7 +50,7 @@ To take advantage of the power of parallel computing, we propose a GPU augmented
         \State \hskip2em Detect pairs which if swapped will reduce the LA cost \Comment{With 32,768 threads on GPU}
         \State \hskip2em Sort pairs by the gains (the amount that can be reduced)
         \State \hskip2em Remove conflicted pairs with less gains
-        \State \hskip2em Swap all pairs remained
+        \State \hskip2em Swap all remaining pairs
         \State \hskip2em If number of the found pairs is small:
         \State \hskip4em Double the number of parallel threads for detection until limit hit
     \end{algorithmic}
@@ -63,7 +63,7 @@ Fig. \ref{fig:gpu_hill_climbing} shows the comparison of Algo. \ref{algo:hillcli
     \includegraphics[width=0.8\textwidth]{images/curve_60s.png}
     \caption{A comparison of the first 60 seconds of the optimization curve of Algo. \ref{algo:hillclimbing} and \ref{algo:gpu_hill_climbing}. 
     Averaged over 100 independent runs.
-    The GPU augmented algorithm is better than the basic algorithm in wall time.
+    The GPU augmented algorithm is better than the basic algorithm in wall-clock time.
     }
     \label{fig:gpu_hill_climbing}
 \end{figure}
@@ -72,7 +72,7 @@ Both the basic hill climbing algorithm and the GPU augmented hill climbing algor
 One instance of Algo. \ref{algo:hillclimbing} uses one Intel 6230 CPU core.
 One instance of Algo. \ref{algo:gpu_hill_climbing} uses one Intel 6130 CPU core and one NVIDIA Tesla V100s GPU.
 
-Both methods are fast enough to get reasonable good results in less than one minute, though the GPU augmented version can achieve better solutions in general.
+Both methods are fast enough to get reasonably good results in less than one minute, though the GPU augmented version can achieve better solutions in general.
 One of the results can be visualized in Fig. \ref{fig:optimization_results}.
 
 \begin{figure}
@@ -89,7 +89,7 @@ One of the results can be visualized in Fig. \ref{fig:optimization_results}.
 \end{figure}
 
 However, it still slightly suffers from local optima.
-In order to get more optimal results, one can not rely on running the algorithm for longer.
+In order to get more globally optimal results, one can not rely on running the algorithm for longer.
 
 Our best results are achieved by searching with 100 independent runs with random initialization.
 However, we observe that the initial states matter more than trying different choices during optimization.
